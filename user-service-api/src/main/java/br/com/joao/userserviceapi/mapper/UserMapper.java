@@ -1,7 +1,7 @@
 package br.com.joao.userserviceapi.mapper;
 
 import br.com.joao.userserviceapi.entity.User;
-import models.responses.UserReponse;
+import models.responses.UserResponse;
 import org.mapstruct.Mapper;
 
 import static org.mapstruct.NullValueCheckStrategy.ALWAYS;
@@ -14,5 +14,5 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 )
 public interface UserMapper {
 
-    UserReponse fromEntity(final User entity);
+    UserResponse fromEntity(final User entity);
 }

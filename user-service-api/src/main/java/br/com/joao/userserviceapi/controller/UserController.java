@@ -1,6 +1,6 @@
 package br.com.joao.userserviceapi.controller;
 
-import models.responses.UserReponse;
+import models.responses.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface UserController {
 
     @GetMapping("/{id}")
-    ResponseEntity<UserReponse> findById(@PathVariable final String id);
+    ResponseEntity<UserResponse> findById(@PathVariable final String id);
 }

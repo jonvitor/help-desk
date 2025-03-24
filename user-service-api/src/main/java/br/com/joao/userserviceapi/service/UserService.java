@@ -1,11 +1,9 @@
 package br.com.joao.userserviceapi.service;
 
-import br.com.joao.userserviceapi.entity.User;
+import br.com.joao.userserviceapi.mapper.UserMapper;
 import br.com.joao.userserviceapi.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import models.responses.UserReponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,10 +11,10 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public User findById(final String id) {
-        return userRepository.findById(id).orElseThrow(() -> {
-            return new RuntimeException("User not found");
-        });
+    public UserReponse findById(final String id) {
+        return userMapper.fromEntity(
+                userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 }

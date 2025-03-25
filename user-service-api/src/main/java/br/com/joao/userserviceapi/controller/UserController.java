@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import models.exceptions.StandardError;
 import models.requests.CreateUserRequest;
+import models.requests.UpdateUserRequest;
 import models.responses.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,10 @@ public interface UserController {
 
     @Operation(summary = "Find user by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found"),
+            @ApiResponse(
+                    responseCode = "200", description = "User found",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponse.class))
+            ),
             @ApiResponse(
                     responseCode = "404", description = "User not found",
                     content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))
@@ -69,4 +73,31 @@ public interface UserController {
     })
     @GetMapping()
     ResponseEntity<List<UserResponse>> findAll();
+
+    @Operation(summary = "Update a user")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "User updated",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponse.class))
+
+            ),
+            @ApiResponse(
+                    responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "User not found",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Internal server error",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))
+            ),
+    })
+    @PutMapping("/{id}")
+    ResponseEntity<UserResponse> update(
+            @Parameter(description = "User id", required = true, example = "67dde20e661aff2bcccaa113")
+            @PathVariable final String id,
+            @Valid @RequestBody final UpdateUserRequest request
+    );
 }

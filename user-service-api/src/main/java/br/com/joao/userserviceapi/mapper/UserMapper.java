@@ -2,9 +2,11 @@ package br.com.joao.userserviceapi.mapper;
 
 import br.com.joao.userserviceapi.entity.User;
 import models.requests.CreateUserRequest;
+import models.requests.UpdateUserRequest;
 import models.responses.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -24,4 +26,7 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     User toEntity(final CreateUserRequest request);
+
+    @Mapping(target = "id", ignore = true)
+    User copyProperties(UpdateUserRequest request, @MappingTarget User user);
 }

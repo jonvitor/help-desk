@@ -9,6 +9,7 @@ import models.requests.CreateUserRequest;
 import models.requests.UpdateUserRequest;
 import models.responses.UserResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,26 +18,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserRepository repository;
+    private final UserMapper mapper;
+    private final BCryptPasswordEncoder encoder;
 
     public UserResponse findById(final String id) {
-        return userMapper.fromEntity(find(id));
+        return mapper.fromEntity(find(id));
     }
 
     private User find(String id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
                 "Object not found with id: " + id + " and type: " + UserResponse.class.getSimpleName()
         ));
     }
 
     public void save(CreateUserRequest request) {
         verifyIfEmailExists(request.email(), null);
-        userRepository.save(userMapper.toEntity(request));
+        repository.save(
+                mapper.toEntity(request).withPassword(encoder.encode(request.password()))
+        );
     }
 
     public void verifyIfEmailExists(final String email, final String id) {
-        userRepository.findByEmail(email).ifPresent(user -> {
+        repository.findByEmail(email).ifPresent(user -> {
             if (!user.getId().equals(id)) {
                 throw new DataIntegrityViolationException("Email " + email + " already exists");
             }
@@ -44,12 +48,16 @@ public class UserService {
     }
 
     public List<UserResponse> findAll() {
-        return userMapper.fromEntities(userRepository.findAll());
+        return mapper.fromEntities(repository.findAll());
     }
 
     public UserResponse update(String id, UpdateUserRequest request) {
         var user = find(id);
         verifyIfEmailExists(request.email(), id);
-        return userMapper.fromEntity(userRepository.save(userMapper.copyProperties(request, user)));
+        return mapper.fromEntity(
+                repository.save(
+                    mapper.copyProperties(request, user))
+                        .withPassword(request.password() != null ? encoder.encode(request.password()) : user.getPassword())
+        );
     }
 }

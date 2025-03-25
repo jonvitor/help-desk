@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import models.exceptions.ResourceNotFoundException;
 import models.exceptions.StandardError;
 import models.exceptions.ValidationError;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -49,5 +50,19 @@ public class ControllerExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ResponseEntity<StandardError> handleDataIntegrityViolationException(final DataIntegrityViolationException e,
+                                                                          final HttpServletRequest request) {
+        return ResponseEntity.status(BAD_REQUEST).body(
+                StandardError.builder()
+                        .timeStamp(now())
+                        .status(BAD_REQUEST.value())
+                        .error(BAD_REQUEST.getReasonPhrase())
+                        .message(e.getMessage())
+                        .path(request.getRequestURI())
+                        .build()
+        );
     }
 }

@@ -54,4 +54,11 @@ class UserControllerImplTest {
                 .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()));
     }
 
+    @Test
+    void whenCallFindAllThenReturnSuccess() throws Exception {
+        mockMvc.perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+    }
+
 }

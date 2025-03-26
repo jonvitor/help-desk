@@ -3,6 +3,7 @@ package br.com.joao.userserviceapi.service;
 import br.com.joao.userserviceapi.entity.User;
 import br.com.joao.userserviceapi.mapper.UserMapper;
 import br.com.joao.userserviceapi.repository.UserRepository;
+import models.exceptions.ResourceNotFoundException;
 import models.responses.UserResponse;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -43,5 +44,14 @@ class UserServiceTest {
         assertEquals(UserResponse.class, response.getClass());
         verify(repository, times(1)).findById(anyString());
         verify(mapper, times(1)).fromEntity(any(User.class));
+    }
+
+    @Test
+    void whenCallFindByIdWithInvalidIdThenThrowResourceNotFoundException() {
+        when(repository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> service.findById("1"));
+        verify(repository, times(1)).findById(anyString());
+        verify(mapper, times(0)).fromEntity(any(User.class));
     }
 }

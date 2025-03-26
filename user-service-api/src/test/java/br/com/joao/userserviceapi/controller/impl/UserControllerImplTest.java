@@ -2,6 +2,9 @@ package br.com.joao.userserviceapi.controller.impl;
 
 import br.com.joao.userserviceapi.entity.User;
 import br.com.joao.userserviceapi.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import models.requests.CreateUserRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,8 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static br.com.joao.userserviceapi.creator.CreatorUtils.generateMock;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,6 +64,24 @@ class UserControllerImplTest {
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    void whenCallSaveThenReturnCreated() throws Exception {
+        final var validEmail = "nfmi3h43gh30@mail.com";
+        final var request = generateMock(CreateUserRequest.class).withEmail(validEmail);
+
+        mockMvc.perform(
+                post("/api/users")
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+        ).andExpect(status().isCreated());
+
+        userRepository.deleteByEmail(validEmail);
+    }
+
+    private String toJson(Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
     }
 
 }

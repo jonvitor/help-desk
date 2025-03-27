@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static br.com.joao.userserviceapi.creator.CreatorUtils.generateMock;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -78,6 +79,26 @@ class UserControllerImplTest {
         ).andExpect(status().isCreated());
 
         userRepository.deleteByEmail(validEmail);
+    }
+
+    @Test
+    void whenCallSaveWithInvalidParametersThenReturnBadRequest() throws Exception {
+        final var invalidEmail = "invalid-email";
+        final var request = generateMock(CreateUserRequest.class).withEmail(invalidEmail);
+
+        mockMvc.perform(
+                post("/api/users")
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+        ).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Validation error"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.timeStamp").isNotEmpty())
+                .andExpect(jsonPath("$.path").value("/api/users"))
+                .andExpect(jsonPath("$.error").value(BAD_REQUEST.getReasonPhrase()))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0].field").value("email"))
+                .andExpect(jsonPath("$.errors[0].message").value("must be a well-formed email address"));
     }
 
     private String toJson(Object object) throws JsonProcessingException {

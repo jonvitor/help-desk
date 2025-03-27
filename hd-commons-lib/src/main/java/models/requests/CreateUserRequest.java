@@ -1,6 +1,7 @@
 package models.requests;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.With;
@@ -17,6 +18,7 @@ public record CreateUserRequest(
 
     @Schema(description = "User email", example = "vitor@mail.com")
     @NotBlank(message = "Email is required")
+    @Email
     @Size(min = 6, max = 50, message = "Email must be between 6 and 50 characters")
     String email,
 

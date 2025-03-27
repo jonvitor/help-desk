@@ -27,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class UserControllerImplTest {
 
+    public static final String PATH = "/api/users";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -62,7 +64,7 @@ class UserControllerImplTest {
 
     @Test
     void whenCallFindAllThenReturnSuccess() throws Exception {
-        mockMvc.perform(get("/api/users"))
+        mockMvc.perform(get(PATH))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -73,7 +75,7 @@ class UserControllerImplTest {
         final var request = generateMock(CreateUserRequest.class).withEmail(validEmail);
 
         mockMvc.perform(
-                post("/api/users")
+                post(PATH)
                         .contentType(APPLICATION_JSON)
                         .content(toJson(request))
         ).andExpect(status().isCreated());
@@ -87,18 +89,17 @@ class UserControllerImplTest {
         final var request = generateMock(CreateUserRequest.class).withEmail(invalidEmail);
 
         mockMvc.perform(
-                post("/api/users")
+                post(PATH)
                         .contentType(APPLICATION_JSON)
                         .content(toJson(request))
         ).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Validation error"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.timeStamp").isNotEmpty())
-                .andExpect(jsonPath("$.path").value("/api/users"))
+                .andExpect(jsonPath("$.path").value(PATH))
                 .andExpect(jsonPath("$.error").value(BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors[0].field").value("email"))
-                .andExpect(jsonPath("$.errors[0].message").value("must be a well-formed email address"));
+                .andExpect(jsonPath("$.errors[?(@.field=='email' && @.message=='must be a well-formed email address')]").exists());
     }
 
     private String toJson(Object object) throws JsonProcessingException {

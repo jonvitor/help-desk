@@ -1,7 +1,6 @@
 spring:
   application:
     name: 'auth-service-api'
-    port: 8081
   data:
     mongodb:
       uri: 'mongodb+srv://help-desk-user:help-desk-user@clusterhelpdesk.4ykvk.mongodb.net/helpdeskdb?retryWrites=true&w=majority&appName=ClusterHelpDesk'
@@ -11,3 +10,5 @@ springdoc:
     title: 'Authentication Service API'
     description: 'Component responsible for authentication'
     version: '1.0.0'
+server:
+  port: 8081

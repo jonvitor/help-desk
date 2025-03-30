@@ -36,5 +36,5 @@ public interface AuthController {
             ),
     })
     @PostMapping("/login")
-    ResponseEntity<AuthenticateResponse> authenticate(@Valid @RequestBody final AuthenticateRequest authenticateRequest);
+    ResponseEntity<AuthenticateResponse> authenticate(@Valid @RequestBody final AuthenticateRequest authenticateRequest) throws Exception;
 }

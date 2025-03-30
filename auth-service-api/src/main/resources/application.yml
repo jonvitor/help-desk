@@ -5,10 +5,15 @@ spring:
     mongodb:
       uri: 'mongodb+srv://help-desk-user:help-desk-user@clusterhelpdesk.4ykvk.mongodb.net/helpdeskdb?retryWrites=true&w=majority&appName=ClusterHelpDesk'
       auto-index-creation: true
+
 springdoc:
   openapi:
     title: 'Authentication Service API'
     description: 'Component responsible for authentication'
     version: '1.0.0'
+
 server:
   port: 8081
+
+jwt.secret: 'HIa/MY7JesWFzCTcdqJLd2qowi2xc0xYi7FREgJjIcGS8TiMYx3y23QZf8+YMIg1WS1JMpD9v70G9hTPPXxvQUmd4jfTfIRm7BLrYU+Wncs='
+jwt.expiration: 120000

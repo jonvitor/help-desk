@@ -24,7 +24,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return UserDetailsDTO.builder()
                 .id(entity.getId())
-                .userName(email)
+                .name(entity.getName())
+                .userName(entity.getEmail())
                 .password(entity.getPassword())
                 .authorities(entity.getProfiles().stream().map(prof -> new SimpleGrantedAuthority(prof.getDescription())).collect(Collectors.toSet()))
                 .build();

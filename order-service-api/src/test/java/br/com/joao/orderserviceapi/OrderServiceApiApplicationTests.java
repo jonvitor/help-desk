@@ -1,4 +1,4 @@
-package br.com.joao.order_service_api;
+package br.com.joao.orderserviceapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

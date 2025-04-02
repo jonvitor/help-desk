@@ -3,10 +3,13 @@ package br.com.joao.orderserviceapi.entities;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import models.enums.OrderStatusEnum;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import static models.enums.OrderStatusEnum.OPEN;
 
 @Data
 @Builder
@@ -31,6 +34,10 @@ public class Order implements Serializable {
 
     @Column(nullable = false, length = 3000)
     private String description;
+
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private OrderStatusEnum status = OPEN;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime closedAt;

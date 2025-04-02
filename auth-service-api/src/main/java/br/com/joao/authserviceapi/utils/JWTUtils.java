@@ -2,10 +2,11 @@ package br.com.joao.authserviceapi.utils;
 
 import br.com.joao.authserviceapi.security.dtos.UserDetailsDTO;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -23,7 +24,7 @@ public class JWTUtils {
                 .claim("id", detailsDTO.getId())
                 .claim("authorities", detailsDTO.getAuthorities())
                 .setSubject(detailsDTO.getUsername())
-                .signWith(SignatureAlgorithm.HS512, this.secret.getBytes())
+                .signWith(Keys.hmacShaKeyFor(this.secret.getBytes(StandardCharsets.UTF_8)))
                 .setExpiration(new Date(System.currentTimeMillis() + this.expiration))
                 .compact();
     }

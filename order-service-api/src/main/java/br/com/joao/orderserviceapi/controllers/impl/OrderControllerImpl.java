@@ -7,6 +7,8 @@ import models.requests.CreateOrderRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequiredArgsConstructor
 public class OrderControllerImpl implements OrderController {
@@ -15,6 +17,7 @@ public class OrderControllerImpl implements OrderController {
 
     @Override
     public ResponseEntity<Void> save(CreateOrderRequest request) {
-        return service.save(request);
+        service.save(request);
+        return ResponseEntity.status(CREATED.value()).build();
     }
 }

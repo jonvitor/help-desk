@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import models.enums.OrderStatusEnum;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -39,6 +40,7 @@ public class Order implements Serializable {
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status = OPEN;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @CreationTimestamp
+    private LocalDateTime createdAt;
     private LocalDateTime closedAt;
 }

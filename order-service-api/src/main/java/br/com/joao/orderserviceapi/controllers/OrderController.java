@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import models.exceptions.StandardError;
-import models.requests.CreateUserRequest;
+import models.requests.CreateOrderRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +33,6 @@ public interface OrderController {
             ),
     })
     @PostMapping
-    ResponseEntity<Void> save(@Valid @RequestBody final CreateUserRequest request);
+    ResponseEntity<Void> save(@Valid @RequestBody final CreateOrderRequest request);
 
 }

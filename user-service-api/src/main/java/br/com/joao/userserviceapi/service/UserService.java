@@ -27,7 +27,7 @@ public class UserService {
     }
 
     private User find(String id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+            return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
                 "Object not found with id: " + id + " and type: " + UserResponse.class.getSimpleName()
         ));
     }

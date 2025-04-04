@@ -1,8 +1,10 @@
 package br.com.joao.orderserviceapi.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import models.enums.OrderStatusEnum;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,6 +16,8 @@ import static models.enums.OrderStatusEnum.OPEN;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "tb_order")
 public class Order implements Serializable {
 

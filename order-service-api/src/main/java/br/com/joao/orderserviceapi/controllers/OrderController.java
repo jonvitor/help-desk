@@ -12,6 +12,7 @@ import models.exceptions.StandardError;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import models.responses.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,8 +53,28 @@ public interface OrderController {
     })
     @PutMapping("/{id}")
     ResponseEntity<OrderResponse> update(
-            @Parameter(description = "User id", required = true)
-            @PathVariable final String id,
+            @Parameter(description = "Order id", required = true)
+            @PathVariable final Long id,
             @Valid @RequestBody final UpdateOrderRequest request);
 
+    @Operation(summary = "Find order by id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "User found",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OrderResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "User not found",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Internal server error",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))
+            ),
+    })
+    @GetMapping("/{id}")
+    ResponseEntity<OrderResponse> findById(
+            @Parameter(description = "Order id", required = true, example = "5")
+            @PathVariable final Long id
+    );
 }

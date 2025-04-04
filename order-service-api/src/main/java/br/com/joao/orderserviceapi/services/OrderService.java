@@ -21,7 +21,7 @@ public class OrderService {
         repository.save(mapper.toEntity(request));
     }
 
-    public OrderResponse update(String id, UpdateOrderRequest request) {
+    public OrderResponse update(Long id, UpdateOrderRequest request) {
         var order = find(id);
 
         return mapper.fromEntity(
@@ -29,9 +29,15 @@ public class OrderService {
         );
     }
 
-    public Order find(String id) {
-        return repository.findById(Long.valueOf(id)).orElseThrow(() -> new ResourceNotFoundException(
+    public OrderResponse findById(Long id) {
+        return mapper.fromEntity(find(id));
+    }
+
+    private Order find(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
                 "Object not found with id: " + id + " and type: " + Order.class.getSimpleName()
         ));
     }
+
+
 }

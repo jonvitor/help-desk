@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import models.responses.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,8 +25,12 @@ public class OrderControllerImpl implements OrderController {
     }
 
     @Override
-    public ResponseEntity<OrderResponse> update(String id, UpdateOrderRequest request) {
+    public ResponseEntity<OrderResponse> findById(Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
 
+    @Override
+    public ResponseEntity<OrderResponse> update(Long id, UpdateOrderRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 }

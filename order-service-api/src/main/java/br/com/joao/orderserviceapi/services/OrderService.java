@@ -8,9 +8,13 @@ import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.valueOf;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +51,17 @@ public class OrderService {
         return orders.stream()
                 .map(mapper::fromEntity)
                 .toList();
+    }
+
+    public Page<OrderResponse> findAllPageable(int page, int size, String orderBy, String direction) {
+        PageRequest request = PageRequest.of(
+                page,
+                size,
+                valueOf(direction),
+                orderBy
+        );
+
+        return repository.findAll(request)
+                .map(mapper::fromEntity);
     }
 }

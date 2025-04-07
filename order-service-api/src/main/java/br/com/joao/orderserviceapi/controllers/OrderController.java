@@ -15,6 +15,7 @@ import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import models.responses.UserResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,7 +83,7 @@ public interface OrderController {
             @PathVariable final Long id
     );
 
-    @Operation(summary = "Find order by id")
+    @Operation(summary = "Find order paginated")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200", description = "Orders found",
@@ -95,4 +96,30 @@ public interface OrderController {
     })
     @GetMapping()
     ResponseEntity<List<OrderResponse>> findAll();
+
+    @Operation(summary = "Find orders paginated")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200", description = "Orders found",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = OrderResponse.class)))
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Internal server error",
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))
+            ),
+    })
+    @GetMapping("/page")
+    ResponseEntity<Page<OrderResponse>> findAllPageable(
+            @Parameter(description = "Page number", required = true, example = "0")
+            @RequestParam(value = "page", defaultValue = "0") int page,
+
+            @Parameter(description = "Page size", required = true, example = "10")
+            @RequestParam(value = "size", defaultValue = "10") int size,
+
+            @Parameter(description = "Order by", required = true, example = "id")
+            @RequestParam(value = "orderBy", defaultValue = "id") String orderBy,
+
+            @Parameter(description = "Order direction", required = true, example = "ASC")
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction
+    );
 }

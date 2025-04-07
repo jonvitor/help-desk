@@ -7,6 +7,7 @@ import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import models.responses.UserResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,11 @@ public class OrderControllerImpl implements OrderController {
     @Override
     public ResponseEntity<List<OrderResponse>> findAll() {
         return ResponseEntity.ok(service.findAll());
+    }
+
+    @Override
+    public ResponseEntity<Page<OrderResponse>> findAllPageable(int page, int size, String orderBy, String direction) {
+        return ResponseEntity.ok(service.findAllPageable(page, size, orderBy, direction));
     }
 
     @Override

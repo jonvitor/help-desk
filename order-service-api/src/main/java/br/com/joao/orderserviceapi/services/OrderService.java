@@ -10,6 +10,8 @@ import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -39,5 +41,11 @@ public class OrderService {
         ));
     }
 
+    public List<OrderResponse> findAll() {
+        var orders = repository.findAll();
 
+        return orders.stream()
+                .map(mapper::fromEntity)
+                .toList();
+    }
 }

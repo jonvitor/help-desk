@@ -37,15 +37,9 @@ public class OrderService {
         repository.save(mapper.toEntity(request));
     }
 
-    private UserResponse validateUser(String userId) {
-        final var user = client.findById(userId).getBody();
-        log.info("User found: {}", user);
-
-        return user;
-    }
-
     public OrderResponse update(Long id, UpdateOrderRequest request) {
         var order = find(id);
+        validateUsers(request);
 
         return mapper.fromEntity(
                 repository.save(mapper.copyProperties(request, order))
@@ -80,5 +74,22 @@ public class OrderService {
 
         return repository.findAll(request)
                 .map(mapper::fromEntity);
+    }
+
+    private void validateUsers(UpdateOrderRequest request) {
+        if (request.requesterId() != null) {
+            validateUser(request.requesterId());
+        }
+
+        if (request.customerId() != null) {
+            validateUser(request.customerId());
+        }
+    }
+
+    private UserResponse validateUser(String userId) {
+        final var user = client.findById(userId).getBody();
+        log.info("User found: {}", user);
+
+        return user;
     }
 }

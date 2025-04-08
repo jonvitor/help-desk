@@ -1,6 +1,5 @@
 package br.com.joao.orderserviceapi.controllers;
 
-import br.com.joao.orderserviceapi.entities.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,7 +13,6 @@ import models.exceptions.StandardError;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
-import models.responses.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

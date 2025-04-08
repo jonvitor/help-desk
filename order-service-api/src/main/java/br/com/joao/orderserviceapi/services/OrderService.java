@@ -1,13 +1,16 @@
 package br.com.joao.orderserviceapi.services;
 
+import br.com.joao.orderserviceapi.clients.UserServiceFeignClient;
 import br.com.joao.orderserviceapi.entities.Order;
 import br.com.joao.orderserviceapi.mapper.OrderMapper;
 import br.com.joao.orderserviceapi.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import models.responses.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,15 +19,29 @@ import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.valueOf;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository repository;
     private final OrderMapper mapper;
+    private final UserServiceFeignClient client;
 
     public void save(CreateOrderRequest request) {
+        final var requester = validateUser(request.requesterId());
+        final var customer = validateUser(request.customerId());
+
+        log.info("Requester {} and Customer {} found", requester, customer);
+
         repository.save(mapper.toEntity(request));
+    }
+
+    private UserResponse validateUser(String userId) {
+        final var user = client.findById(userId).getBody();
+        log.info("User found: {}", user);
+
+        return user;
     }
 
     public OrderResponse update(Long id, UpdateOrderRequest request) {

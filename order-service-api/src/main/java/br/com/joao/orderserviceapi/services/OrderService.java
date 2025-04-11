@@ -6,11 +6,13 @@ import br.com.joao.orderserviceapi.mapper.OrderMapper;
 import br.com.joao.orderserviceapi.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import models.dtos.OrderCreatedMessage;
 import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import models.responses.UserResponse;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,14 +29,20 @@ public class OrderService {
     private final OrderRepository repository;
     private final OrderMapper mapper;
     private final UserServiceFeignClient client;
+    private final RabbitTemplate rabbitTemplate;
 
     public void save(CreateOrderRequest request) {
         final var requester = validateUser(request.requesterId());
         final var customer = validateUser(request.customerId());
+        final var entity = mapper.toEntity(request);
 
-        log.info("Requester {} and Customer {} found", requester, customer);
+        repository.save(entity);
 
-        repository.save(mapper.toEntity(request));
+        rabbitTemplate.convertAndSend(
+                "helpdesk",
+                "rk.orders.create",
+                new OrderCreatedMessage(mapper.fromEntity(entity), requester, customer)
+        );
     }
 
     public OrderResponse update(Long id, UpdateOrderRequest request) {
